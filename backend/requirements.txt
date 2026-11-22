@@ -19,3 +19,4 @@ pesapal-python
 requests
 # only needed when DATABASE_URL points at PostgreSQL (Neon, Supabase, Render...)
 psycopg2-binary
+psycopg[binary]
