@@ -1,8 +1,7 @@
 // Shared settings and helpers. Loaded FIRST on every page.
 // When I deploy, API_BASE changes to the live API address (e.g. https://api.yourdomain.com).
 // the one place that says where the backend lives; every other script uses this
-const API_BASE = 'https://onrender.com';
-
+const API_BASE = 'https://shamba-fresh-api.onrender.com';
 
 // Images are either "/uploads/..." (served by the API) or a full https:// link (Cloudinary).
 // returns the full address of an image so the browser can load it
