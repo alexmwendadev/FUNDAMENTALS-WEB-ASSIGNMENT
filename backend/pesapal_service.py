@@ -89,7 +89,7 @@ def start_checkout(*, merchant_reference, amount, description, callback_url,
                 # Pesapal wants a last name, a placeholder is enough
                 last_name="Customer",
                 # delivery location as the address line
-                line1=address[:200],
+                line_1=address[:200],
             ),
         )
         # send the order to Pesapal
