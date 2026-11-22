@@ -69,7 +69,7 @@ def start_checkout(*, merchant_reference, amount, description, callback_url,
             # Kenyan shillings
             currency="KES",
             # the total worked out on the server
-            amount=Decimal(str(amount)),
+            amount=round(float(Decimal(str(amount))), 2),
             # shown to the customer on Pesapal's page; Pesapal allows 100 characters at most
             description=description[:100],
             # where Pesapal sends the customer after paying
