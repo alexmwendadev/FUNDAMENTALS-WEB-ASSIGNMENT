@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- text encoding, so accents and symbols display correctly -->
+  <meta charset="UTF-8">
+  <!-- makes the page scale properly on phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- the text shown in the browser tab -->
+  <title>Checkout | Shamba Fresh</title>
+  <!-- opens the connection to Google Fonts early so the fonts load faster -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- the two fonts: Bricolage Grotesque for headings, Figtree for body text -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- the small icon in the browser tab -->
+  <link rel="icon" type="image/jpeg" href="assets/images/shambafreshlogo.jpg">
+  <!-- all the styling lives in this one file -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<!-- full-height page with no site header -->
+<body class="auth-body">
+  <!-- link back to the products page -->
+  <a href="products.html" class="back-home">← Back to Products</a>
+  <!-- two halves: branding on the left, the form on the right -->
+  <div class="split-layout">
+    <div class="auth-left">
+      <div class="auth-left-content">
+        <h1>Complete<br>Order.</h1>
+        <p>Choose how much you need and where to deliver it. You will pay on Pesapal's secure page with M-Pesa or card.</p>
+      </div>
+    </div>
+    <div class="auth-right signup-mode">
+      <div class="auth-form-container">
+        <h2>Checkout</h2>
+        <!-- order.js writes the product name, price and farmer here -->
+        <p class="subtitle" id="product-summary">Loading...</p>
+
+        <!-- order.js sends this to the backend when it is submitted -->
+        <form id="checkout-form">
+          <div class="input-group">
+            <label for="order-qty">Quantity (<span id="qty-unit">kg</span>)</label>
+            <!-- whole number; order.js limits it to the stock available -->
+            <input type="number" id="order-qty" min="1" step="1" value="1" required>
+            <small class="hint" id="qty-hint"></small>
+          </div>
+          
+          <!-- NEW: Styled total row so the user can't miss it -->
+          <div class="order-total-row" style="background: var(--sage); border: 2px dashed var(--leaf); padding: 16px; border-radius: 8px; margin: 20px 0; display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 1.1rem; font-weight: 600; color: var(--leaf);">Total to Pay:</span>
+            <strong id="order-total" style="font-size: 1.8rem; color: var(--leaf); font-family: var(--head);">—</strong>
+          </div>
+
+          <div class="input-group">
+            <label for="phone">Phone Number</label>
+            <!-- customer's phone for this order -->
+            <input type="tel" id="phone" placeholder="0712 345 678" required>
+          </div>
+          <div class="input-group">
+            <label for="email">Email Address</label>
+            <!-- where the payment receipt goes -->
+            <input type="email" id="email" placeholder="you@example.com" required>
+            <small class="hint">Your payment receipt is sent here.</small>
+          </div>
+          <div class="input-group">
+            <label for="location">Delivery Location</label>
+            <!-- delivery location -->
+            <input type="text" id="location" placeholder="e.g. Thika Road, Nairobi" required>
+          </div>
+          <!-- sends the order, then redirects to Pesapal -->
+          <button type="submit" class="btn main auth-submit" id="pay-btn">Continue to payment</button>
+          <!-- errors and progress messages appear here -->
+          <small id="checkout-msg" class="feedback" role="status" style="text-align:center; margin-top:10px;"></small>
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- scripts load in this order: settings first (config.js), then the shared header code (main.js), then this page's own code -->
+  <script src="javascript/config.js"></script>
+  <script src="javascript/order.js"></script>
+</body>
+</html>

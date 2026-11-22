@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- text encoding, so accents and symbols display correctly -->
+  <meta charset="UTF-8">
+  <!-- makes the page scale properly on phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- the text shown in the browser tab -->
+  <title>Log In | Shamba Fresh</title>
+  
+  <!-- opens the connection to Google Fonts early so the fonts load faster -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- the two fonts: Bricolage Grotesque for headings, Figtree for body text -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- the small icon in the browser tab -->
+  <link rel="icon" type="image/jpeg" href="assets/images/shambafreshlogo.jpg">
+  <!-- all the styling lives in this one file -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<!-- full-height page with no site header -->
+<body class="auth-body">
+
+  <!-- Navigation back to the main landing page -->
+  <!-- link back to the home page -->
+  <a href="index.html" class="back-home">← Back to Home</a>
+
+  <!-- two halves: branding on the left, the form on the right -->
+  <div class="split-layout">
+    
+    <!-- Left Side: Branding and Welcome Text -->
+    <div class="auth-left">
+      <div class="auth-left-content">
+        <a href="index.html" class="logo" style="justify-content: center; margin-bottom: 40px; width: 100%;">
+          <img src="assets/images/shambafreshlogo.jpg" alt="Shamba Fresh Logo" style="height: 100px; width: auto; border-radius: 12px;">
+        </a>
+        <h1>Welcome<br>Back.</h1>
+        <p>Log in to track your orders, manage your farm uploads, and connect directly with the community.</p>
+      </div>
+    </div>
+
+    <!-- Right Side: The Login Form -->
+    <div class="auth-right">
+      <div class="auth-form-container">
+        <h2>Log In</h2>
+        <p class="subtitle">Enter your details to access your account.</p>
+
+        <!-- The ID "login-form" is targeted by auth.js to intercept the submit event -->
+        <form id="login-form">
+          
+          <div class="input-group">
+            <label for="login-id">Username</label>
+            <input type="text" id="login-id" placeholder="alexmwenda" required>
+          </div>
+
+          <div class="input-group">
+            <label for="login-password">Password</label>
+            <!-- Eye icon wrapper -->
+            <div class="password-wrapper">
+              <input type="password" id="login-password" placeholder="••••••••" required>
+              <!-- Added the closed-eye emoji by default -->
+              <button type="button" class="toggle-password" id="toggle-login-password" onclick="togglePassword('login-password', 'toggle-login-password')">🙈</button>
+            </div>
+            <!-- New container for inline error messages during login -->
+            <small id="login-error" class="feedback"></small>
+          </div>
+
+          <div class="form-options" style="display: flex; justify-content: space-between; align-items: center;">
+            <label class="checkbox-label">
+              <!-- 'Remember me' does nothing yet -->
+              <input type="checkbox"> Remember me
+            </label>
+            <!-- Placeholder for future password reset functionality -->
+            <a href="#" style="font-size: 0.85rem; color: var(--leaf); text-decoration: none; font-weight: 600;">Forgot password?</a>
+          </div>
+
+          <!-- submit button (auth.js handles the login) -->
+          <button type="submit" class="btn main auth-submit">Log In</button>
+        </form>
+
+        <!-- Link to the signup page for new users -->
+        <p class="auth-footer">
+          Don't have an account? <a href="signup.html">Sign up here</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loads the authentication logic to connect with the Python backend -->
+  <!-- scripts load in this order: settings first (config.js), then the shared header code (main.js), then this page's own code -->
+  <script src="javascript/config.js"></script>
+  <script src="javascript/main.js"></script>
+  <script src="javascript/auth.js"></script>
+</body>
+</html>

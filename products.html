@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- text encoding, so accents and symbols display correctly -->
+  <meta charset="UTF-8">
+  <!-- makes the page scale properly on phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- the text shown in the browser tab -->
+  <title>Our Products | Shamba Fresh</title>
+  
+  <!-- opens the connection to Google Fonts early so the fonts load faster -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- the two fonts: Bricolage Grotesque for headings, Figtree for body text -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- the small icon in the browser tab -->
+  <link rel="icon" type="image/jpeg" href="assets/images/shambafreshlogo.jpg">
+  <!-- all the styling lives in this one file -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- top bar shown on every public page -->
+  <header>
+    <div class="bar">
+      <!-- logo and site name; links to the home page -->
+      <a class="logo" href="index.html" aria-label="Shamba Fresh home">
+        <img src="assets/images/shambafreshlogo.jpg" alt="">
+        <span>Shamba Fresh</span>
+      </a>
+      
+      <!-- the Menu button, only visible on phones (main.js opens and closes the navigation) -->
+      <button class="menu-btn" aria-expanded="false" aria-controls="main-nav">Menu</button>
+      
+      <!-- the navigation links -->
+      <nav id="main-nav" aria-label="Main">
+        <ul>
+          <!-- the public pages; aria-current marks the page I'm on -->
+          <li><a href="index.html">Home</a></li>
+          <li><a href="products.html" aria-current="page">Products</a></li>
+          <li><a href="contact.html">Contact us</a></li>
+          
+          <!-- My Dashboard link: hidden until main.js finds a logged in user, then it points to the right dashboard -->
+          <li id="nav-dashboard" style="display: none;"><a href="dashboard.html">My Dashboard</a></li>
+          
+          <!-- Log In / Sign Up: hidden once someone is logged in -->
+          <li class="auth-section" id="nav-auth">
+            <a href="login.html">Log In</a>
+            <a href="signup.html">Sign Up</a>
+          </li>
+
+          <!-- avatar button and menu: shown only when logged in -->
+          <li id="nav-profile" class="profile-nav" style="display: none;">
+            <!-- round button that opens the menu -->
+            <button class="profile-btn" id="profile-btn" aria-expanded="false">
+              <!-- main.js puts the profile picture or the first letter in here -->
+              <span class="avatar" id="user-avatar">U</span>
+            </button>
+            <!-- the menu under the avatar: My Profile and Log Out -->
+            <div class="profile-dropdown" id="profile-dropdown">
+              <a href="profile.html">My Profile</a>
+              <a href="#" class="logout-link" onclick="logout()">Log Out</a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- the page's own content starts here -->
+  <main>
+    <!-- title banner at the top of the page -->
+    <section class="page-head">
+      <div class="wrap">
+        <h1>Our Fresh Produce</h1>
+        <p>Straight from the farm. Order today, harvested tomorrow.</p>
+      </div>
+    </section>
+
+    <!-- holds the grid of product cards -->
+    <section class="products-section">
+      <div class="wrap">
+        <!-- products.js replaces the 'Loading' text with one card per product -->
+        <div class="product-grid" id="product-grid">
+          <p>Loading fresh produce...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- bottom bar -->
+  <footer>
+    <div class="foot">
+      <!-- main.js replaces 2026 with the current year -->
+      <span>&copy; <span id="year">2026</span> Shamba Fresh</span>
+      <span>Designed By Syntax Squad</span>
+    </div>
+  </footer>
+
+  <!-- scripts load in this order: settings first (config.js), then the shared header code (main.js), then this page's own code -->
+  <script src="javascript/config.js"></script>
+  <script src="javascript/main.js"></script>
+  <!-- this page's own code: loads and draws the products -->
+  <script src="javascript/products.js"></script>
+</body>
+</html>

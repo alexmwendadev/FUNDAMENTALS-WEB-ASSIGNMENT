@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- text encoding, so accents and symbols display correctly -->
+  <meta charset="UTF-8">
+  <!-- makes the page scale properly on phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- the text shown in the browser tab -->
+  <title>Farmer Dashboard | Shamba Fresh</title>
+  
+  <!-- opens the connection to Google Fonts early so the fonts load faster -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- the two fonts: Bricolage Grotesque for headings, Figtree for body text -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- the small icon in the browser tab -->
+  <link rel="icon" type="image/jpeg" href="assets/images/shambafreshlogo.jpg">
+  <!-- all the styling lives in this one file -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<!-- dashboard layout: top bar, sidebar and main area -->
+<body class="dash-body">
+
+  <!-- slim top bar with the logo and the account menu -->
+  <header class="dash-topbar">
+    <!-- Left: Logo -->
+    <a class="logo" href="index.html">
+      <img src="assets/images/shambafreshlogo.jpg" alt="">
+      <span>Shamba Fresh</span>
+    </a>
+    
+    <!-- Right: Welcome & Profile -->
+    <div class="dash-topbar-right">
+      <span class="dash-welcome">Welcome, <strong id="dash-username">farmer</strong></span>
+      <div id="nav-profile" class="profile-nav" style="display: none; margin-left: 10px;">
+        <button class="profile-btn" id="profile-btn" aria-expanded="false">
+          <span class="avatar" id="user-avatar">U</span>
+        </button>
+        <div class="profile-dropdown" id="profile-dropdown">
+          <a href="profile.html">My Profile</a>
+          <a href="#" class="logout-link" onclick="logout()">Log Out</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- sidebar on the left, content on the right -->
+  <div class="dash-layout">
+    <aside class="dash-sidebar">
+      <button class="dash-tab active" data-tab="overview">📊 Overview</button>
+      <button class="dash-tab" data-tab="products">📦 My Products</button>
+      <button class="dash-tab" data-tab="orders">🛒 Orders</button>
+      <button class="dash-tab" data-tab="add">➕ Add New Product</button>
+      
+      <div class="dash-sidebar-divider"></div>
+      
+      <a href="index.html" class="dash-tab external-link">🏠 Home</a>
+      <a href="products.html" class="dash-tab external-link">🛍️ Marketplace</a>
+      <a href="contact.html" class="dash-tab external-link">📞 Contact Us</a>
+    </aside>
+
+    <main class="dash-main">
+      <!-- OVERVIEW -->
+      <section class="tab-panel active" id="tab-overview">
+        <h1>Overview</h1>
+        <div class="stat-grid">
+          <div class="stat-card" id="stat-products-card" style="cursor: pointer;">
+            <span class="stat-label">Products Listed</span>
+            <span class="stat-value" id="stat-products">—</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">To Deliver</span>
+            <span class="stat-value" id="stat-to-deliver">—</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Delivered</span>
+            <span class="stat-value" id="stat-delivered">—</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Total Earned</span>
+            <span class="stat-value" id="stat-earned">—</span>
+          </div>
+        </div>
+
+        <p id="payout-info" class="payout-info"></p>
+
+        <h2 class="section-title">Recent Orders</h2>
+        <div id="recent-orders" class="dash-table-wrap">
+          <p class="empty-note">No orders yet.</p>
+        </div>
+      </section>
+
+      <!-- MY PRODUCTS -->
+      <section class="tab-panel" id="tab-products">
+        <div class="tab-header">
+          <h1>My Products</h1>
+          <button class="btn main" data-goto-tab="add">➕ Add New Product</button>
+        </div>
+        <div id="my-products" class="dash-table-wrap">
+          <p class="empty-note">Loading…</p>
+        </div>
+      </section>
+
+      <!-- ORDERS -->
+      <section class="tab-panel" id="tab-orders">
+        <h1>Orders</h1>
+        <p class="subtitle">Orders appear here once the customer has paid. Mark them delivered when you hand them over.</p>
+        <div id="my-orders" class="dash-table-wrap">
+          <p class="empty-note">Loading…</p>
+        </div>
+      </section>
+
+      <!-- ADD PRODUCT -->
+      <section class="tab-panel" id="tab-add">
+        <h1>Add New Product</h1>
+        <p class="subtitle">List a new item on the marketplace.</p>
+        <form id="upload-form" class="dash-form">
+          <div class="input-group">
+            <label for="item_name">Produce Name</label>
+            <input type="text" id="item_name" placeholder="e.g. Sweet Maize" required>
+          </div>
+          <div class="input-group">
+            <label for="unit_price">Price (KES per unit)</label>
+            <input type="text" id="unit_price" inputmode="decimal" placeholder="e.g. 90" required>
+          </div>
+          <div class="input-group">
+            <label for="unit">Sold per</label>
+            <select id="unit" required>
+              <option value="kg">kg</option>
+              <option value="bag">bag</option>
+              <option value="sack">sack</option>
+              <option value="crate">crate</option>
+              <option value="bunch">bunch</option>
+              <option value="piece">piece</option>
+              <option value="dozen">dozen</option>
+              <option value="litre">litre</option>
+              <option value="tray">tray</option>
+              <option value="bundle">bundle</option>
+            </select>
+          </div>
+          <div class="input-group">
+            <label for="stock">Quantity available</label>
+            <input type="number" id="stock" min="1" step="1" placeholder="e.g. 100" required>
+            <small class="hint">A whole number of the unit above. It goes down automatically as customers pay.</small>
+          </div>
+          <div class="input-group">
+            <label for="image">Upload Photo</label>
+            <input type="file" id="image" accept="image/jpeg,image/png,image/webp" capture="environment" required>
+            <small class="hint">JPG, PNG or WEBP, up to 5 MB.</small>
+          </div>
+          <button type="submit" class="btn main auth-submit">Upload to Marketplace</button>
+          <small id="upload-error" class="feedback"></small>
+        </form>
+      </section>
+    </main>
+  </div>
+
+  <!-- NEW: Modal for Editing Stock -->
+  <div id="edit-stock-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-content">
+      <h2>Edit Stock</h2>
+      <p id="modal-product-name" class="subtitle">Product Name</p>
+      <div class="input-group">
+        <label for="modal-stock-input">New Stock Amount</label>
+        <input type="number" id="modal-stock-input" min="1" required>
+      </div>
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button id="modal-save-btn" class="btn main" style="flex: 1;">Save</button>
+        <button id="modal-cancel-btn" class="btn alt" style="flex: 1;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- scripts load in this order: settings first (config.js), then the shared header code (main.js), then this page's own code -->
+  <script src="javascript/config.js"></script>
+  <script src="javascript/main.js"></script>
+  <script src="javascript/dashboard.js"></script>
+</body>
+</html>

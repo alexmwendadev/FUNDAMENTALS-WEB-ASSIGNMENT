@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- text encoding, so accents and symbols display correctly -->
+  <meta charset="UTF-8">
+  <!-- makes the page scale properly on phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- the text shown in the browser tab -->
+  <title>Shamba Fresh | Farm products straight from the farm</title>
+  <meta name="description" content="Fresh farm products grown and sold directly by our farm. Browse our products and get in touch to order.">
+  
+  <!-- opens the connection to Google Fonts early so the fonts load faster -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- the two fonts: Bricolage Grotesque for headings, Figtree for body text -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- the small icon in the browser tab -->
+  <link rel="icon" type="image/jpeg" href="assets/images/shambafreshlogo.jpg">
+  <!-- all the styling lives in this one file -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- top bar shown on every public page -->
+  <header>
+    <div class="bar">
+      <!-- logo and site name; links to the home page -->
+      <a class="logo" href="index.html" aria-label="Shamba Fresh home">
+        <img src="assets/images/shambafreshlogo.jpg" alt="">
+        <span>Shamba Fresh</span>
+      </a>
+      
+      <!-- the Menu button, only visible on phones (main.js opens and closes the navigation) -->
+      <button class="menu-btn" aria-expanded="false" aria-controls="main-nav">Menu</button>
+      
+      <!-- the navigation links -->
+      <nav id="main-nav" aria-label="Main">
+        <ul>
+          <!-- the public pages; aria-current marks the page I'm on -->
+          <li><a href="index.html" aria-current="page">Home</a></li>
+          <li><a href="products.html">Products</a></li>
+          <li><a href="contact.html">Contact us</a></li>
+          
+          <!-- Dashboard (Hidden by default) -->
+          <!-- My Dashboard link: hidden until main.js finds a logged in user, then it points to the right dashboard -->
+          <li id="nav-dashboard" style="display: none;"><a href="dashboard.html">My Dashboard</a></li>
+          
+          <!-- Auth Section (Login/Signup) -->
+          <!-- Log In / Sign Up: hidden once someone is logged in -->
+          <li class="auth-section" id="nav-auth">
+            <a href="login.html">Log In</a>
+            <a href="signup.html">Sign Up</a>
+          </li>
+
+          <!-- Profile Dropdown (Hidden by default) -->
+          <!-- avatar button and menu: shown only when logged in -->
+          <li id="nav-profile" class="profile-nav" style="display: none;">
+            <!-- round button that opens the menu -->
+            <button class="profile-btn" id="profile-btn" aria-expanded="false">
+              <!-- main.js puts the profile picture or the first letter in here -->
+              <span class="avatar" id="user-avatar">U</span>
+            </button>
+            <!-- the menu under the avatar: My Profile and Log Out -->
+            <div class="profile-dropdown" id="profile-dropdown">
+              <a href="profile.html">My Profile</a>
+              <a href="#" class="logout-link" onclick="logout()">Log Out</a>
+            </div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- the page's own content starts here -->
+  <main>
+    <!-- Hero Section -->
+    <div class="hero">
+      <div class="hero-in">
+        <div>
+          <h1>Fresh from our farm to your table</h1>
+          <p>We grow, harvest and sell our own farm products. No middlemen, so what you buy is fresh and fairly priced.</p>
+          <!-- two buttons: browse the products or contact me -->
+          <div class="btns">
+            <a class="btn main" href="products.html">See our products</a>
+            <a class="btn alt" href="contact.html">Contact us</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About Section -->
+    <section>
+      <div class="wrap about">
+        <h2>About our farm</h2>
+        <div>
+          <p>Shamba Fresh is a farm in Tharaka-Nithi. We grow our crops and raise our produce with care, and we sell directly to households, shops and restaurants.</p>
+          <p>This website is where you can see what we have in season, check prices and reach us to place an order.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="why">
+      <div class="wrap">
+        <h2>Why buy from us</h2>
+        <div class="points">
+          <div>
+            <h3>Picked fresh</h3>
+            <p>Harvested close to the time you order, so it reaches you at its best.</p>
+          </div>
+          <div>
+            <h3>Fair prices</h3>
+            <p>Buying straight from the farm means you pay for the produce, not the long chain behind it.</p>
+          </div>
+          <div>
+            <h3>Know your source</h3>
+            <p>You can ask how anything was grown, because we grew it.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="cta">
+      <div class="wrap">
+        <h2>See what is available</h2>
+        <p>Browse our products with photos and prices, then call or message to order.</p>
+        <a class="btn main" href="products.html">View products</a>
+      </div>
+    </section>
+  </main>
+
+  <!-- bottom bar -->
+  <footer>
+    <div class="foot">
+      <!-- main.js replaces 2026 with the current year -->
+      <span>&copy; <span id="year">2026</span> Shamba Fresh</span>
+      <span>Designed By Syntax Squad</span>
+    </div>
+  </footer>
+
+  <!-- scripts load in this order: settings first (config.js), then the shared header code (main.js), then this page's own code -->
+  <script src="javascript/config.js"></script>
+  <script src="javascript/main.js"></script>
+</body>
+</html>

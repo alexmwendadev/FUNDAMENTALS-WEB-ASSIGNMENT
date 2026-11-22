@@ -1,0 +1,21 @@
+# web framework and the server that runs it
+fastapi
+uvicorn[standard]
+# database toolkit (ORM)
+sqlalchemy
+# data validation (version 2 is needed by schemas.py)
+pydantic>=2
+# signed login tokens
+pyjwt
+# password hashing with argon2
+passlib[argon2]
+# lets FastAPI read form uploads (images)
+python-multipart
+# reads the .env file
+python-dotenv
+# Pesapal payments SDK
+pesapal-python
+# HTTP calls (used for Cloudinary uploads)
+requests
+# only needed when DATABASE_URL points at PostgreSQL (Neon, Supabase, Render...)
+psycopg2-binary

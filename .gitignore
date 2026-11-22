@@ -1,0 +1,19 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+
+# Local Database (CRITICAL: Never host this)
+shamba.db
+*.sqlite3
+
+# Local Uploads (Your test images)
+backend/uploads/
+
+# Environment Variables (CRITICAL: Never commit this)
+.env
+.secret_key
+
+# OS Files
+.DS_Store
+Thumbs.db

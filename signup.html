@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- text encoding, so accents and symbols display correctly -->
+  <meta charset="UTF-8">
+  <!-- makes the page scale properly on phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- the text shown in the browser tab -->
+  <title>Sign Up | Shamba Fresh</title>
+  
+  <!-- opens the connection to Google Fonts early so the fonts load faster -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- the two fonts: Bricolage Grotesque for headings, Figtree for body text -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- the small icon in the browser tab -->
+  <link rel="icon" type="image/jpeg" href="assets/images/shambafreshlogo.jpg">
+  <!-- all the styling lives in this one file -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<!-- full-height page with no site header -->
+<body class="auth-body">
+
+  <!-- link back to the home page -->
+  <a href="index.html" class="back-home">← Back to Home</a>
+
+  <!-- two halves: branding on the left, the form on the right -->
+  <div class="split-layout">
+    <div class="auth-left">
+      <div class="auth-left-content">
+        <a href="index.html" class="logo" style="justify-content: center; margin-bottom: 40px; width: 100%;">
+          <img src="assets/images/shambafreshlogo.jpg" alt="Shamba Fresh Logo" style="height: 100px; width: auto; border-radius: 12px;">
+        </a>
+        <h1>Join the<br>Farm.</h1>
+        <p>Create an account to buy fresh produce directly from the farm, or to sell your own harvest.</p>
+      </div>
+    </div>
+
+    <div class="auth-right">
+      <div class="auth-form-container">
+        <h2>Sign Up</h2>
+        <p class="subtitle">Create your account to get started.</p>
+
+        <!-- auth.js sends this to the backend when it is submitted -->
+        <form id="signup-form">
+          
+          <!-- ROLE SELECTOR (Updated to Customer) -->
+          <div class="role-selector">
+            <label>
+              <!-- 'buyer' means customer; the backend turns it into the 'customer' role -->
+              <input type="radio" name="role" value="buyer" checked>
+              <span>I am a Customer</span>
+            </label>
+            <label>
+              <!-- choosing farmer reveals the payout fields below -->
+              <input type="radio" name="role" value="farmer">
+              <span>I am a Farmer</span>
+            </label>
+          </div>
+
+          <!-- FARMER ONLY: first section heading (second one is "Payment & contact details" below) -->
+          <h3 class="form-group-title farmer-only">Account details</h3>
+
+          <div class="input-group">
+            <label for="username">Username</label>
+            <!-- at least 3 characters here; the backend applies the full rules -->
+            <input type="text" id="username" placeholder="alexmwenda" required minlength="3">
+            <!-- username problems (e.g. already taken) appear here -->
+            <small id="username-feedback" class="feedback"></small>
+          </div>
+
+          <div class="input-group">
+            <label for="email">Email Address</label>
+            <!-- stored for payment receipts -->
+            <input type="email" id="email" placeholder="alex@example.com" required>
+          </div>
+
+          <div class="input-group">
+            <label for="password">Password</label>
+            <!-- Eye icon wrapper -->
+            <div class="password-wrapper">
+              <input type="password" id="password" placeholder="At least 8 characters" required minlength="8">
+              <!-- Added the closed-eye emoji by default -->
+              <button type="button" class="toggle-password" id="toggle-signup-password" onclick="togglePassword('password', 'toggle-signup-password')">🙈</button>
+            </div>
+            <!-- New container for live password validation feedback -->
+            <small id="password-feedback" class="feedback"></small>
+            <small class="hint">Must have 8+ chars, uppercase, lowercase, number, and special character.</small>
+          </div>
+
+          <!-- FARMER ONLY: shown when "I am a Farmer" is selected -->
+          <div id="farmer-fields" class="farmer-fields">
+            <h3 class="form-group-title">Payment &amp; contact details</h3>
+
+            <div class="input-group">
+              <label for="phone">Contact Mobile</label>
+              <input type="tel" id="phone" placeholder="0712 345 678" autocomplete="tel">
+              <small class="hint">Customers and our team will use this to reach you.</small>
+            </div>
+
+            <div class="input-group">
+              <label for="payment_method">How do you want to be paid?</label>
+              <!-- how a farmer wants to be paid (the backend lowercases the value) -->
+              <select id="payment_method">
+                <option value="mpesa">M-Pesa number</option>
+                <option value="till">Till number</option>
+                <option value="Airtel Money">Airtel money</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label for="payment_number" id="payment_number_label">M-Pesa Number</label>
+              <input type="text" id="payment_number" placeholder="0712 345 678" inputmode="numeric">
+            </div>
+          </div>
+
+          <div class="form-options">
+            <label class="checkbox-label">
+              <!-- must be ticked before the form can be sent -->
+              <input type="checkbox" required> I agree to the Terms & Privacy Policy
+            </label>
+          </div>
+
+          <!-- general signup errors appear here -->
+          <small id="signup-error" class="feedback"></small>
+
+          <!-- submit button -->
+          <button type="submit" class="btn main auth-submit">Create Account</button>
+        </form>
+
+        <p class="auth-footer">
+          Already have an account? <a href="login.html">Log in here</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- scripts load in this order: settings first (config.js), then the shared header code (main.js), then this page's own code -->
+  <script src="javascript/config.js"></script>
+  <script src="javascript/main.js"></script>
+  <script src="javascript/auth.js"></script>
+</body>
+</html>

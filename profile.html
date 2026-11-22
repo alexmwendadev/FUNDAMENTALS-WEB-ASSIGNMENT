@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- text encoding, so accents and symbols display correctly -->
+  <meta charset="UTF-8">
+  <!-- makes the page scale properly on phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- the text shown in the browser tab -->
+  <title>My Profile | Shamba Fresh</title>
+  
+  <!-- opens the connection to Google Fonts early so the fonts load faster -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- the two fonts: Bricolage Grotesque for headings, Figtree for body text -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- the small icon in the browser tab -->
+  <link rel="icon" type="image/jpeg" href="assets/images/shambafreshlogo.jpg">
+  <!-- all the styling lives in this one file -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<!-- full-height page with no site header -->
+<body class="auth-body">
+
+  <!-- link back to the home page -->
+  <a href="index.html" class="back-home">← Back to Home</a>
+
+  <!-- two halves: branding on the left, the form on the right -->
+  <div class="split-layout">
+    <!-- Left Side: Branding -->
+    <div class="auth-left">
+      <div class="auth-left-content">
+        <a href="index.html" class="logo" style="justify-content: center; margin-bottom: 40px; width: 100%;">
+          <img src="assets/images/shambafreshlogo.jpg" alt="Shamba Fresh Logo" style="height: 100px; width: auto; border-radius: 12px;">
+        </a>
+        <h1>Your<br>Profile.</h1>
+        <p>Manage your contact details and account preferences.</p>
+      </div>
+    </div>
+
+    <!-- Right Side: Form -->
+    <div class="auth-right signup-mode">
+      <div class="auth-form-container">
+        <h2>Profile Settings</h2>
+        <p class="subtitle">Update your account information.</p>
+
+        <form id="profile-form">
+          
+          <!-- PROFILE PICTURE SECTION -->
+          <div class="avatar-upload-section">
+            <!-- profile.js draws the picture (or the first letter) here -->
+            <div class="avatar-preview" id="avatar-preview">
+              <span id="avatar-initial">U</span>
+            </div>
+            <div class="avatar-input">
+              <label for="avatar-file" class="btn small" style="display:inline-block; cursor:pointer;">Change Picture</label>
+              <!-- hidden file chooser; the 'Change Picture' label opens it -->
+              <input type="file" id="avatar-file" accept="image/jpeg,image/png,image/webp" style="display: none;">
+              <!-- only shown when there is a picture to remove -->
+              <button type="button" class="btn alt small" id="avatar-remove" hidden style="margin-top:8px;">Remove</button>
+              <small class="hint" style="display:block; margin-top:8px;">JPG, PNG or WEBP, up to 2 MB</small>
+              <!-- picture upload messages appear here -->
+              <small id="avatar-msg" class="feedback" role="status"></small>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label>Username (Cannot be changed)</label>
+            <!-- shown but disabled: usernames can't be changed -->
+            <input type="text" id="prof-username" disabled style="background: #eee; color: #888;">
+          </div>
+
+          <div class="input-group">
+            <label for="prof-email">Email Address</label>
+            <!-- email for receipts -->
+            <input type="email" id="prof-email" placeholder="you@example.com">
+            <small class="hint">Used for payment receipts.</small>
+          </div>
+
+          <!-- EVERYONE can edit their phone number -->
+          <div class="input-group">
+            <label for="prof-phone">Contact Phone Number</label>
+            <input type="tel" id="prof-phone" placeholder="0712 345 678">
+            <small class="hint">Used for delivery updates and contact.</small>
+          </div>
+
+          <!-- ONLY FARMERS see this section (Hidden by default) -->
+          <div id="farmer-profile-fields" style="display: none;">
+            <h3 class="form-group-title">Payment Information</h3>
+            
+            <div class="input-group">
+              <label for="prof-payment-method">Payment Method</label>
+              <!-- payout method (farmers only) -->
+              <select id="prof-payment-method">
+                <option value="mpesa">M-Pesa number</option>
+                <option value="airtel money">Airtel Money</option>
+                <option value="till">Till number</option>
+              </select>
+            </div>
+
+            <div class="input-group">
+              <label for="prof-payment-number">Payment Number</label>
+              <input type="text" id="prof-payment-number" placeholder="0712 345 678">
+            </div>
+          </div>
+
+          <button type="submit" class="btn main auth-submit" style="margin-top: 10px;">Save Changes</button>
+          
+          <!-- Success / Error Message -->
+          <!-- save messages appear here -->
+          <small id="profile-msg" class="feedback" role="status" style="text-align: center; margin-top: 12px;"></small>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- scripts load in this order: settings first (config.js), then the shared header code (main.js), then this page's own code -->
+  <script src="javascript/config.js"></script>
+  <script src="javascript/profile.js"></script>
+</body>
+</html>

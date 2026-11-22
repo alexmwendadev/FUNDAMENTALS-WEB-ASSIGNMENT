@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- text encoding, so accents and symbols display correctly -->
+  <meta charset="UTF-8">
+  <!-- makes the page scale properly on phones -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- the text shown in the browser tab -->
+  <title>Payment | Shamba Fresh</title>
+
+  <!-- opens the connection to Google Fonts early so the fonts load faster -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- the two fonts: Bricolage Grotesque for headings, Figtree for body text -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- the small icon in the browser tab -->
+  <link rel="icon" type="image/jpeg" href="assets/images/shambafreshlogo.jpg">
+  <!-- all the styling lives in this one file -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<!-- full-height page with no site header -->
+<body class="auth-body">
+  <!-- link back to the home page -->
+  <a href="index.html" class="back-home">← Back to Home</a>
+
+  <!-- two halves: branding on the left, the form on the right -->
+  <div class="split-layout">
+    <div class="auth-left">
+      <div class="auth-left-content">
+        <a href="index.html" class="logo" style="justify-content: center; margin-bottom: 40px; width: 100%;">
+          <img src="assets/images/shambafreshlogo.jpg" alt="Shamba Fresh Logo" style="height: 100px; width: auto; border-radius: 12px;">
+        </a>
+        <h1>Your<br>Payment.</h1>
+        <p>We confirm every payment directly with Pesapal before your order is passed to the farmer.</p>
+      </div>
+    </div>
+
+    <div class="auth-right">
+      <!-- the result card; payment-return.js fills it in. aria-live makes screen readers announce changes -->
+      <div class="auth-form-container result-card" aria-live="polite">
+        <!-- round icon: tick, exclamation mark or dots -->
+        <div id="result-icon" class="result-icon wait">…</div>
+        <!-- heading, e.g. 'Payment received' -->
+        <h2 id="result-title">Checking your payment…</h2>
+        <!-- short explanation -->
+        <p id="result-text" class="subtitle">This only takes a moment.</p>
+        <!-- order summary line, when known -->
+        <p id="result-detail" class="result-detail"></p>
+        <!-- buttons added by the script (View my orders, Check again...) -->
+        <div id="result-actions" class="result-actions"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- scripts load in this order: settings first (config.js), then the shared header code (main.js), then this page's own code -->
+  <script src="javascript/config.js"></script>
+  <!-- this page's own code: asks the backend what happened to the payment -->
+  <script src="javascript/payment-return.js"></script>
+</body>
+</html>
