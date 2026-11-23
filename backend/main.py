@@ -440,7 +440,7 @@ def update_product_stock(product_id: int, stock: str = Form(...), db: Session = 
         raise HTTPException(status_code=403, detail="You can only edit your own products")
     
     # validate and save the new stock
-    product.stock = services.clean_stock(stock)
+    product.stock = services.clean_stock(stock, allow_zero=True)
     db.commit()
     db.refresh(product)
     return product

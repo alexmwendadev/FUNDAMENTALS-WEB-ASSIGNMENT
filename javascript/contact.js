@@ -16,6 +16,10 @@ if (contactForm) {
         // the message text
         const message = document.getElementById('contact-message').value.trim();
 
+        // button says 'Sending...' and can't be clicked twice
+        const sendBtn = contactForm.querySelector('button[type="submit"]');
+        setBtn(sendBtn, 'Sending...');
+
         // the backend may be down
         try {
             // POST the message to the backend
@@ -27,19 +31,22 @@ if (contactForm) {
 
             // saved
             if (response.ok) {
-                // thank the user
-                alert("Thank you! Your message has been sent successfully.");
-                // empty the form
+                // button says 'Sent!', a small popup thanks the user, the form empties
+                setBtn(sendBtn, 'Sent!');
+                showToast('Thank you! Your message has been sent.', 'success');
                 contactForm.reset();
+                // leave 'Sent!' visible for a moment, then put the normal label back
+                await pause(1500);
+                resetBtn(sendBtn);
             // the backend refused it
             } else {
-                // generic failure message
-                alert("Something went wrong. Please try again.");
+                showToast('Something went wrong. Please try again.');
+                resetBtn(sendBtn);
             }
         // couldn't reach the backend
         } catch (error) {
-            // tell the user
-            alert("Cannot connect to the Python backend. Is uvicorn running?");
+            showToast('Cannot connect to the server. Please try again.');
+            resetBtn(sendBtn);
         }
     });
 }

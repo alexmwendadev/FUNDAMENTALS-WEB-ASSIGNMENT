@@ -65,8 +65,8 @@
     // Send the customer (back) to Pesapal for an unpaid order
     // 'Pay now': asks the backend for a new payment attempt and sends the customer to Pesapal
     async function payNow(order, btn) {
-        // block double clicks
-        btn.disabled = true;
+        // button says 'Starting payment...' and can't be clicked twice
+        setBtn(btn, 'Starting payment...');
         // ask the backend
         try {
             // POST /api/orders/<id>/pay
@@ -81,8 +81,8 @@
         } catch (err) {
             // NEW: Show inline error
             say(err.message, false);
-            // allow another try
-            btn.disabled = false;
+            // allow another try: put the 'Pay now' label back
+            resetBtn(btn);
         }
     }
 
@@ -274,8 +274,8 @@
                 if (res.ok && (await res.json()).order.status !== 'pending') {
                     // remember to redraw
                     changed = true;
-                    // NEW: Alert instead of toast
-                    alert(`Order #${o.id} is confirmed. Thank you!`);
+                    // show it on the page instead of a popup
+                    say(`Order #${o.id} is confirmed. Thank you!`, true);
                 }
             // ignore this order and carry on
             } catch {}

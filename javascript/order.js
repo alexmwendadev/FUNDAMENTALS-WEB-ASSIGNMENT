@@ -43,7 +43,7 @@
         // login expired: log in again
         if (meRes.status === 401) { clearSession(); window.location.href = 'login.html'; return; }
         // product was deleted or never existed
-        if (!pRes.ok) { say('That product is no longer available.', false); window.location.href = 'products.html'; return; }
+        if (!pRes.ok) { say('That product is no longer available. Taking you back to the shop...', false); setTimeout(() => { window.location.href = 'products.html'; }, 2000); return; }
         // read both replies
         product = await pRes.json();
         me = await meRes.json();
@@ -58,7 +58,9 @@
     // farmers can't buy (the backend refuses too)
     if (me.role === 'farmer') {
         say("Farmers can't place orders. Log in with a customer account to buy.", false);
-        window.location.href = 'dashboard.html';
+        // leave the message on screen for a moment before moving on
+        btn.disabled = true;
+        setTimeout(() => { window.location.href = 'dashboard.html'; }, 2500);
         return;
     }
     // sold out: disable the form
@@ -121,7 +123,7 @@
     // Coming back from Pesapal with the browser's Back button: let them try again
     window.addEventListener('pageshow', (e) => {
         // restored from the browser's cache: re-enable the button
-        if (e.persisted) { btn.disabled = false; }
+        if (e.persisted) { resetBtn(btn); }
     });
 
     // ---- place the order ----
@@ -137,8 +139,8 @@
         // invalid: stop
         if (!qty) { say(`Enter a quantity between 1 and ${product.stock}.`, false); return; }
 
-        // block double clicks, which would create two orders
-        btn.disabled = true;
+        // block double clicks, which would create two orders. The button says what is happening
+        setBtn(btn, 'Preparing payment...');
 
         // send the order
         try {
@@ -166,16 +168,16 @@
 
             // tell the customer what is happening
             say('Taking you to the secure payment page…', true);
-            // keep the button blocked
-            // NEW: Removed 'Redirecting...' text change
+            // button says 'Redirecting...' while the browser leaves for Pesapal
+            setBtn(btn, 'Redirecting...');
             // send the customer to Pesapal's secure payment page
             window.location.href = data.redirect_url;
         // anything went wrong
         } catch (error) {
             // NEW: Show reason inline instead of popup
             say(error.message, false);
-            // let them try again
-            btn.disabled = false;
+            // let them try again: put the normal label back
+            resetBtn(btn);
         }
     });
 })();

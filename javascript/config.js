@@ -78,3 +78,20 @@ function statusPill(status) {
   // hand the badge back to be placed in a table cell
   return span;
 }
+
+// ---- button states: the label changes while something is happening ----
+// remembers the original label the first time, then shows the new label (and blocks clicks while busy)
+function setBtn(btn, label, busy = true) {
+  if (!btn) return;
+  if (!btn.dataset.label) btn.dataset.label = btn.textContent;
+  btn.textContent = label;
+  btn.disabled = busy;
+}
+// puts the original label back and lets the button be clicked again
+function resetBtn(btn) {
+  if (!btn) return;
+  if (btn.dataset.label) btn.textContent = btn.dataset.label;
+  btn.disabled = false;
+}
+// waits a number of milliseconds, so people can read 'Success!' before the page moves on
+function pause(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }

@@ -195,16 +195,27 @@ function showToast(message, type = 'error') {
 }
 
 // 8. Show/Hide Password Toggle
-// toggles the input type between password and text
-// NEW: Updated to accept the button ID and swap the eye emoji
+// the two icons (same style as the eye on big sites): an open eye while the password is hidden,
+// a crossed-out eye while it is showing. They are drawn with SVG so they look the same on every device
+const EYE_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+const EYE_OFF_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a19.77 19.77 0 0 1 5.06-5.94M9.9 4.24A10.94 10.94 0 0 1 12 5c7 0 11 7 11 7a19.86 19.86 0 0 1-3.17 4.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+
+// switches a password box between hidden dots and readable text, and swaps the icon to match
 function togglePassword(inputId, btnId) {
   const input = document.getElementById(inputId);
   const btn = document.getElementById(btnId);
-  if (input.type === 'password') {
-    input.type = 'text';
-    if (btn) btn.textContent = '👁️'; // Open eye when visible
-  } else {
-    input.type = 'password';
-    if (btn) btn.textContent = '🙈'; // Crossed eye when hidden
+  if (!input) return;
+  const showing = input.type === 'password';
+  // now showing the text: crossed-out eye. Now hidden: open eye
+  input.type = showing ? 'text' : 'password';
+  if (btn) {
+    btn.innerHTML = showing ? EYE_OFF_ICON : EYE_ICON;
+    btn.setAttribute('aria-label', showing ? 'Hide password' : 'Show password');
   }
 }
+
+// put the open-eye icon on every password toggle button as soon as the page loads
+document.querySelectorAll('.toggle-password').forEach(btn => {
+  btn.innerHTML = EYE_ICON;
+  btn.setAttribute('aria-label', 'Show password');
+});

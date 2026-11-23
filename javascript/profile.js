@@ -110,8 +110,8 @@
     // couldn't load them
     } catch {
         // tell me
-        alert('Error loading profile. Please log in again.');
-        window.location.href = 'login.html';
+        showToast('Error loading profile. Please log in again.');
+        setTimeout(() => { window.location.href = 'login.html'; }, 1500);
         // can't continue
         return;
     }
@@ -203,7 +203,7 @@
         }
 
         // block double clicks
-        saveBtn.disabled = true;
+        setBtn(saveBtn, 'Saving...');
         // send it
         try {
             // PUT /api/me
@@ -215,12 +215,14 @@
             // the updated profile, or an error
             const data = await res.json();
             // the backend refused it (e.g. an invalid phone): show why
-            if (!res.ok) { say(msg, errorMessage(data, 'Failed to update.'), false); return; }
+            if (!res.ok) { say(msg, errorMessage(data, 'Failed to update.'), false); resetBtn(saveBtn); return; }
 
             // show what was saved
             fill(data);
             // confirm
             say(msg, 'Profile updated successfully!', true);
+            // button says 'Saved!' until the page moves on
+            setBtn(saveBtn, 'Saved!', false);
             // after a moment, go back to where I came from
             setTimeout(() => {
                 // default: my own dashboard or the shop
@@ -239,6 +241,7 @@
         // couldn't reach the backend
         } catch {
             say(msg, 'Cannot connect to backend.', false);
+            resetBtn(saveBtn);
         // runs whatever happened
         } finally {
             // unblock the button

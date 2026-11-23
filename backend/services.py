@@ -140,12 +140,13 @@ def clean_unit(raw):
 
 
 # reads the quantity a farmer has available: a whole number of at least 1
-def clean_stock(raw):
+def clean_stock(raw, allow_zero=False):
+    # allow_zero=True lets a farmer mark a product as sold out by setting its stock to 0
     # make sure it is text, then drop commas
     text = str(raw if raw is not None else "").strip().replace(",", "")
     # digits only, and between 1 and MAX_STOCK
-    if not re.fullmatch(r"\d{1,7}", text) or not (1 <= int(text) <= MAX_STOCK):
-        raise ServiceError("Quantity must be a whole number of at least 1")
+    if not re.fullmatch(r"\d{1,7}", text) or not ((0 if allow_zero else 1) <= int(text) <= MAX_STOCK):
+        raise ServiceError("Quantity must be a whole number" + ("" if allow_zero else " of at least 1"))
     # hand back a real integer
     return int(text)
 

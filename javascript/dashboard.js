@@ -189,7 +189,7 @@ async function loadMyProducts(token) {
             // the backend refused
             } else {
                 // NEW: Use alert instead of toast
-                alert('Could not remove product.');
+                showToast('Could not remove product.');
             }
         });
 
@@ -219,10 +219,12 @@ async function loadMyProducts(token) {
             // Handle Save
             saveBtn.onclick = async () => {
                 const newStock = stockInput.value.trim();
-                if (!newStock || newStock < 1) {
-                    alert("Please enter a valid stock amount."); return;
+                if (newStock === '' || Number(newStock) < 0) {
+                    showToast("Please enter a valid stock amount."); return;
                 }
 
+                // button says 'Saving...' while the change is sent
+                setBtn(saveBtn, 'Saving...');
                 const body = new URLSearchParams({ stock: newStock });
                 const r = await fetch(`${API_BASE}/api/products/${p.id}`, {
                     method: 'PATCH',
@@ -231,12 +233,16 @@ async function loadMyProducts(token) {
                 });
 
                 if (r.ok) {
-                    // NEW: No toast, just close and reload
+                    // 'Saved!' for a moment, then close the box and put the label back
+                    setBtn(saveBtn, 'Saved!');
+                    await pause(700);
                     closeModal();
+                    resetBtn(saveBtn);
                     loadMyProducts(token);
                     loadOverview(token);
                 } else {
-                    alert("Failed to update stock.");
+                    showToast(errorMessage(await r.json().catch(() => null), 'Failed to update stock.'));
+                    resetBtn(saveBtn);
                 }
             };
         });
@@ -295,7 +301,7 @@ async function loadMyOrders(token) {
                 // ask first
                 if (!confirm(`Mark order #${o.id} as delivered?`)) return;
                 // block double clicks
-                btn.disabled = true;
+                setBtn(btn, 'Saving...');
                 // the backend expects form-style data; 'delivered' is the only value it accepts
                 const body = new URLSearchParams({ new_status: 'delivered' });
                 // PATCH the order's status
@@ -313,9 +319,9 @@ async function loadMyOrders(token) {
                 // the backend refused
                 } else {
                     // allow another try
-                    btn.disabled = false;
+                    resetBtn(btn);
                     // NEW: Use alert instead of toast
-                    alert('Could not update the order.');
+                    showToast('Could not update the order.');
                 }
             });
             // put the button in the cell
@@ -369,9 +375,9 @@ function setupUploadForm(token) {
         // the chosen photo
         const file = document.getElementById('image').files[0];
         // no photo chosen
-        if (!file) { alert('Choose a photo.'); return; }
+        if (!file) { showToast('Choose a photo.'); return; }
         // photo too big
-        if (file.size > MAX_PRODUCT_IMAGE) { alert('That photo is over 5 MB. Choose a smaller one.'); return; }
+        if (file.size > MAX_PRODUCT_IMAGE) { showToast('That photo is over 5 MB. Choose a smaller one.'); return; }
 
         // a form made of text fields plus the photo file
         const fd = new FormData();
@@ -387,7 +393,8 @@ function setupUploadForm(token) {
         fd.append('file', file);
 
         // block double clicks, which would list the product twice
-        submit.disabled = true;
+        // button says 'Uploading...' and can't be clicked twice
+        setBtn(submit, 'Uploading...');
         // NEW: Removed 'Uploading...' text change
 
         // send it
@@ -423,7 +430,7 @@ function setupUploadForm(token) {
         // runs whatever happened
         } finally {
             // unblock the button
-            submit.disabled = false;
+            resetBtn(submit);
         }
     });
 }
@@ -451,7 +458,7 @@ async function initDashboard() {
     // backend unreachable
     } catch {
         // NEW: Alert instead of toast
-        alert('Cannot connect to backend.');
+        showToast('Cannot connect to backend.');
         // can't continue
         return;
     }
@@ -459,8 +466,9 @@ async function initDashboard() {
     // customers don't belong here
     if (me.role !== 'farmer') {
         // NEW: Alert instead of toast
-        alert('Access denied. Farmers only.');
-        window.location.href = 'products.html';
+        showToast('Access denied. Farmers only.');
+        // leave the message visible for a moment before moving on
+        setTimeout(() => { window.location.href = 'products.html'; }, 1500);
         return;
     }
 

@@ -95,8 +95,8 @@ async function loadProducts() {
                     window.location.href = 'login.html';
                 // farmers can't buy, so say so (the backend refuses too)
                 } else if (localStorage.getItem('shamba_role') === 'farmer') {
-                    // NEW: Just redirect them away quietly, no popup needed.
-                    window.location.href = 'dashboard.html';
+                    // tell them why instead of silently moving them
+                    showToast("Farmers can't place orders. Log in with a customer account to buy.");
                 // a logged in customer
                 } else {
                     // open the checkout page for this product; only the product id is passed, the price is read fresh there

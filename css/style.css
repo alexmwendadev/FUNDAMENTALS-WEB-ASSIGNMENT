@@ -393,3 +393,71 @@ footer { background: var(--leaf); color: var(--milk); padding: 28px 24px; border
   .product-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
   .products-section { padding: 20px 12px; }
 }
+
+
+/* ============================================================
+   PAYMENTS, CHECKOUT & ORDER STATUS (added)
+   ============================================================ */
+/* the 'hidden' attribute must beat any display style, so a hidden button (e.g. Remove picture) really disappears */
+[hidden] { display: none !important; }
+/* green message style (the red .feedback.error already existed) */
+.feedback.success { color: var(--leaf); display: block; }
+/* greyed-out look for a button that is blocked while a request runs, or the product is sold out */
+.btn:disabled { opacity: .55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+/* order status pills */
+/* badge colour for refunded orders (pending, paid and delivered already had theirs) */
+.status-refunded { background: #fde2e0; color: #a1281d; }
+/* the Pay now / Check payment buttons in the last column of the orders table */
+.table-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+/* message line above the customer's orders table */
+#orders-msg { display: block; margin: 0 0 12px; }
+/* takes no space while there is no message */
+#orders-msg:empty { display: none; }
+
+/* out-of-stock badge on product cards */
+/* grey label on the photo when a product is sold out */
+.availability-badge.out { background: #6b6b6b; color: #fff; }
+/* greyed-out Order button for sold out products */
+.product-card .order-btn:disabled { background: #e4e4e4; border-color: #ccc; color: #888; }
+
+/* checkout */
+/* the green 'Total' bar on the checkout page */
+.order-total-row { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; margin-bottom: 18px; background: var(--sage); border-radius: 8px; font-size: 1.05rem; }
+/* the amount inside it */
+.order-total-row strong { font-family: var(--head); font-size: 1.4rem; color: var(--leaf); }
+
+/* payment result page */
+/* the card on payment-return.html: everything is centred */
+.result-card { text-align: center; }
+/* result heading size */
+.result-card h2 { font-size: 1.8rem; }
+/* space under the explanation */
+.result-card .subtitle { margin-bottom: 16px; }
+/* the big round icon (tick, exclamation mark or dots) */
+.result-icon { width: 72px; height: 72px; margin: 0 auto 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 800; color: #fff; }
+/* green for success */
+.result-icon.ok { background: var(--leaf); }
+/* red for a problem */
+.result-icon.bad { background: #c0392b; }
+/* amber and pulsing while waiting */
+.result-icon.wait { background: #b8a04a; animation: pulse 1.4s ease-in-out infinite; }
+/* the pulsing animation used by the waiting icon */
+@keyframes pulse { 50% { opacity: .55; } }
+/* the order summary line */
+.result-detail { font-weight: 600; color: var(--soil); margin-bottom: 20px; overflow-wrap: anywhere; }
+/* takes no space while empty */
+.result-detail:empty { display: none; }
+/* row of buttons under the message */
+.result-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+/* no animation for people who have asked their device to reduce motion */
+@media (prefers-reduced-motion: reduce) { .result-icon.wait { animation: none; } }
+
+
+/* ============================================================
+   PASSWORD EYE ICON (SVG instead of emoji)
+   ============================================================ */
+/* centres the icon inside the click area */
+.toggle-password { display: flex; align-items: center; justify-content: center; padding: 4px; }
+/* icon size; it takes the button's colour (grey, green on hover) through currentColor */
+.toggle-password svg { width: 22px; height: 22px; display: block; }

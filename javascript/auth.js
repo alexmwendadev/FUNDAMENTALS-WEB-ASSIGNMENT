@@ -107,8 +107,10 @@ if (signupForm) {
         
         // NEW: Check if password is strong enough before sending
         if (password.length < 8 || !/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/\d/.test(password) || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-            // Don't submit, the live feedback is already showing the error
-            return; 
+            // weak password: re-run the live check so the 'Missing: ...' message shows even if the field was autofilled
+            passwordInput.dispatchEvent(new Event('input'));
+            passwordInput.focus();
+            return;
         }
 
         // the data sent to the backend
@@ -123,7 +125,8 @@ if (signupForm) {
 
         // NEW: get the button and disable it, but keep the text same
         const submitBtn = signupForm.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
+        // button now says 'Creating account...' and can't be clicked again
+        setBtn(submitBtn, 'Creating account...');
 
         // send the request; a network failure is caught below
         try {
@@ -139,7 +142,9 @@ if (signupForm) {
 
             // account created
             if (response.ok) {
-                // NEW: Redirect immediately, no popups
+                // show 'Success!' for a moment, then go to the login page
+                setBtn(submitBtn, 'Success!');
+                await pause(900);
                 window.location.href = 'login.html';
             // the backend refused it
             } else {
@@ -154,14 +159,15 @@ if (signupForm) {
                     signupError.textContent = message;
                     signupError.className = 'feedback error';
                 }
-                submitBtn.disabled = false;
+                // refused: put the button back
+                resetBtn(submitBtn);
             }
         // couldn't reach the backend at all
         } catch (error) {
             // NEW: Show inline error
             signupError.textContent = "Cannot connect to the Python backend.";
             signupError.className = 'feedback error';
-            submitBtn.disabled = false;
+            resetBtn(submitBtn);
         }
     });
 }
@@ -196,7 +202,8 @@ if (loginForm) {
 
         // NEW: Disable button but don't change text
         const submitBtn = loginForm.querySelector('button[type="submit"]');
-        submitBtn.disabled = true;
+        // button now says 'Logging in...' and can't be clicked again
+        setBtn(submitBtn, 'Logging in...');
 
         // send the request
         try {
@@ -241,7 +248,9 @@ if (loginForm) {
                 // ignore a bad referrer and go home
                 } catch (e) {}
 
-                // NEW: Redirect immediately without popup
+                // show 'Success!' for a moment so the user sees the login worked, then go
+                setBtn(submitBtn, 'Success!');
+                await pause(900);
                 window.location.href = targetUrl;
 
             // wrong username or password
@@ -249,14 +258,15 @@ if (loginForm) {
                 // NEW: Show inline error instead of popup
                 loginError.textContent = "Login failed: " + errorMessage(data, "Please try again.");
                 loginError.className = 'feedback error';
-                submitBtn.disabled = false;
+                // wrong details: put the button back
+                resetBtn(submitBtn);
             }
         // couldn't reach the backend
         } catch (error) {
             // NEW: Show inline error
             loginError.textContent = "Cannot connect to the Python backend.";
             loginError.className = 'feedback error';
-            submitBtn.disabled = false;
+            resetBtn(submitBtn);
         }
     });
 }
