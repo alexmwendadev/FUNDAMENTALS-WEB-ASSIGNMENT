@@ -236,7 +236,7 @@ footer { background: var(--leaf); color: var(--milk); padding: 28px 24px; border
 @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
 /* ============================================================
-   PRODUCTS PAGE — Jumia-style Compact Grid
+   PRODUCTS PAGE
    ============================================================ */
 .page-head { background: var(--sage); padding: 60px 24px; text-align: center; }
 .page-head h1 { color: var(--leaf) !important; font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 10px; }
