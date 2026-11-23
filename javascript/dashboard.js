@@ -78,7 +78,7 @@ function qtyText(o) {
     return o.qty ? `${o.qty} ${o.unit || ''}`.trim() : '—';
 }
 
-// ---------- Loaders ----------
+// ---------- Loaders --------
 // fills the Overview tab: the four stat cards and the three newest orders
 async function loadOverview(token) {
     // fetch my products and my orders at the same time
