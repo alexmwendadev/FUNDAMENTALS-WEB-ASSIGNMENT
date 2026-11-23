@@ -352,6 +352,184 @@ async function loadMyOrders(token) {
     ));
 }
 
+// ---------- Photo picker (upload a file OR use the live camera) ----------
+// the photo that will be sent to the backend, whichever way it was chosen
+let selectedPhoto = null;
+// the running camera stream (null when the camera is off)
+let cameraStream = null;
+// which camera is in use: 'environment' = back camera, 'user' = front camera
+let cameraFacing = 'environment';
+// address of the preview image, so it can be released from memory
+let previewUrl = null;
+
+// turns the camera off
+function stopCamera() {
+    if (cameraStream) {
+        cameraStream.getTracks().forEach(t => t.stop());
+        cameraStream = null;
+    }
+    const video = document.getElementById('camera-video');
+    if (video) { video.srcObject = null; video.classList.remove('live'); }
+    const start = document.getElementById('camera-start');
+    const capture = document.getElementById('camera-capture');
+    const flip = document.getElementById('camera-flip');
+    if (start) start.style.display = '';
+    if (capture) capture.style.display = 'none';
+    if (flip) flip.style.display = 'none';
+}
+
+// shows a message under the photo picker (empty text clears it)
+function setPhotoError(text) {
+    const el = document.getElementById('photo-error');
+    if (!el) return;
+    el.textContent = text;
+    el.className = text ? 'feedback error' : 'feedback';
+}
+
+// remembers the chosen photo and shows its preview
+function setSelectedPhoto(file) {
+    selectedPhoto = file;
+    if (previewUrl) { URL.revokeObjectURL(previewUrl); previewUrl = null; }
+    const picker = document.getElementById('photo-upload-box');
+    const camBox = document.getElementById('photo-camera-box');
+    const options = document.querySelector('.photo-options');
+    const prevBox = document.getElementById('photo-preview-box');
+    if (file) {
+        previewUrl = URL.createObjectURL(file);
+        document.getElementById('photo-preview').src = previewUrl;
+        // hide the two options, show only the preview
+        picker.style.display = 'none';
+        camBox.style.display = 'none';
+        options.style.display = 'none';
+        prevBox.style.display = 'flex';
+    } else {
+        document.getElementById('photo-preview').removeAttribute('src');
+        prevBox.style.display = 'none';
+        options.style.display = 'flex';
+    }
+}
+
+// switches between the 'Upload Image' and 'Use Camera' options
+function showPhotoOption(which) {
+    const isCamera = which === 'camera';
+    document.getElementById('opt-upload').classList.toggle('active', !isCamera);
+    document.getElementById('opt-camera').classList.toggle('active', isCamera);
+    document.getElementById('photo-upload-box').style.display = isCamera ? 'none' : 'flex';
+    document.getElementById('photo-camera-box').style.display = isCamera ? 'flex' : 'none';
+    // leaving the camera option turns the camera off
+    if (!isCamera) stopCamera();
+    setPhotoError('');
+}
+
+// opens the camera and shows the live picture
+async function startCamera() {
+    setPhotoError('');
+    // browsers only allow the camera on https:// pages (or localhost)
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setPhotoError('Camera is not available here. Use "Upload Image" instead (the camera needs a secure https page).');
+        return;
+    }
+    // close any camera already running (e.g. when switching front/back)
+    stopCamera();
+    try {
+        cameraStream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: { ideal: cameraFacing } },
+            audio: false,
+        });
+    } catch (e) {
+        // permission denied, or no camera found
+        setPhotoError(e && e.name === 'NotAllowedError'
+            ? 'Camera access was blocked. Allow it in your browser settings, or use "Upload Image".'
+            : 'Could not open the camera. Use "Upload Image" instead.');
+        return;
+    }
+    const video = document.getElementById('camera-video');
+    video.srcObject = cameraStream;
+    video.classList.add('live');
+    document.getElementById('camera-start').style.display = 'none';
+    document.getElementById('camera-capture').style.display = '';
+    document.getElementById('camera-flip').style.display = '';
+}
+
+// takes a still picture from the live camera and turns it into a file
+function capturePhoto() {
+    const video = document.getElementById('camera-video');
+    // camera not ready yet
+    if (!video.videoWidth) { setPhotoError('Camera is still loading. Try again in a second.'); return; }
+
+    // draws the current video frame, scaled down so the file stays under the 5 MB limit
+    const draw = (maxSide) => {
+        const scale = Math.min(1, maxSide / Math.max(video.videoWidth, video.videoHeight));
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(video.videoWidth * scale);
+        canvas.height = Math.round(video.videoHeight * scale);
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+        return canvas;
+    };
+
+    // tries 2000px at 90% quality first, then smaller until it fits
+    const attempts = [[2000, 0.9], [1600, 0.85], [1200, 0.8], [800, 0.75]];
+    const tryNext = (i) => {
+        draw(attempts[i][0]).toBlob((blob) => {
+            if (!blob) { setPhotoError('Could not capture the photo. Try again.'); return; }
+            // too big and smaller sizes are left: try the next one
+            if (blob.size > MAX_PRODUCT_IMAGE && i < attempts.length - 1) { tryNext(i + 1); return; }
+            const file = new File([blob], `camera-${Date.now()}.jpg`, { type: 'image/jpeg' });
+            stopCamera();
+            setPhotoError('');
+            setSelectedPhoto(file);
+        }, 'image/jpeg', attempts[i][1]);
+    };
+    tryNext(0);
+}
+
+// brings the picker back to its starting state (used after a successful upload)
+function resetPhotoPicker() {
+    stopCamera();
+    document.getElementById('image').value = '';
+    setSelectedPhoto(null);
+    showPhotoOption('upload');
+}
+
+// makes the photo picker buttons work
+function setupPhotoPicker() {
+    // not on this page
+    if (!document.getElementById('opt-upload')) return;
+
+    document.getElementById('opt-upload').addEventListener('click', () => showPhotoOption('upload'));
+    document.getElementById('opt-camera').addEventListener('click', () => showPhotoOption('camera'));
+    document.getElementById('camera-start').addEventListener('click', startCamera);
+    document.getElementById('camera-capture').addEventListener('click', capturePhoto);
+    document.getElementById('camera-flip').addEventListener('click', () => {
+        cameraFacing = cameraFacing === 'environment' ? 'user' : 'environment';
+        startCamera();
+    });
+
+    // a file picked from the device
+    document.getElementById('image').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setPhotoError('');
+        setSelectedPhoto(file);
+    });
+
+    // 'Retake / Change' goes back to the two options
+    document.getElementById('photo-retake').addEventListener('click', () => {
+        document.getElementById('image').value = '';
+        setSelectedPhoto(null);
+        showPhotoOption('upload');
+    });
+
+    // turn the camera off when the farmer leaves the Add tab or closes the page
+    document.querySelectorAll('.dash-tab[data-tab], [data-goto-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const target = btn.dataset.tab || btn.dataset.gotoTab;
+            if (target !== 'add') stopCamera();
+        });
+    });
+    window.addEventListener('beforeunload', stopCamera);
+}
+
 // ---------- Upload ----------
 // makes the Add New Product form send the new product to the backend
 function setupUploadForm(token) {
@@ -372,10 +550,10 @@ function setupUploadForm(token) {
         err.className = 'feedback';
         err.textContent = '';
 
-        // the chosen photo
-        const file = document.getElementById('image').files[0];
+        // the chosen photo (uploaded from the device or captured with the camera)
+        const file = selectedPhoto;
         // no photo chosen
-        if (!file) { showToast('Choose a photo.'); return; }
+        if (!file) { showToast('Upload a photo or take one with the camera.'); return; }
         // photo too big
         if (file.size > MAX_PRODUCT_IMAGE) { showToast('That photo is over 5 MB. Choose a smaller one.'); return; }
 
@@ -409,6 +587,8 @@ function setupUploadForm(token) {
             if (res.ok) {
                 // empty the form
                 form.reset();
+                // clear the chosen photo and put the picker back to the start
+                resetPhotoPicker();
                 // refresh the products table
                 await loadMyProducts(token);
                 // refresh the stats
@@ -494,6 +674,8 @@ async function initDashboard() {
 
     // make the tabs work
     initTabs();
+    // make the photo picker (upload / camera) work
+    setupPhotoPicker();
     // make the upload form work
     setupUploadForm(token);
     // load the three tabs at the same time

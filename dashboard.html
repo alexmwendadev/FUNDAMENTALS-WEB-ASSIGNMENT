@@ -18,6 +18,16 @@
   <link rel="icon" type="image/jpeg" href="assets/images/shambafreshlogo.jpg">
   <!-- all the styling lives in this one file -->
   <link rel="stylesheet" href="css/style.css">
+  <!-- styles for the photo picker (upload / camera) on the Add New Product form -->
+  <style>
+    .photo-options { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 4px; }
+    .photo-opt.active { background: var(--leaf); color: var(--milk); }
+    .photo-box { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+    .camera-video { width: 100%; max-width: 420px; border-radius: 12px; background: #000; display: none; }
+    .camera-video.live { display: block; }
+    .photo-preview { width: 100%; max-width: 420px; max-height: 320px; object-fit: cover; border-radius: 12px; border: 1px solid #ccc; display: block; }
+    .photo-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  </style>
 </head>
 <!-- dashboard layout: top bar, sidebar and main area -->
 <body class="dash-body">
@@ -145,9 +155,40 @@
             <small class="hint">A whole number of the unit above. It goes down automatically as customers pay.</small>
           </div>
           <div class="input-group">
-            <label for="image">Upload Photo</label>
-            <input type="file" id="image" accept="image/jpeg,image/png,image/webp" required>
-            <small class="hint">JPG, PNG or WEBP, up to 5 MB.</small>
+            <label>Product Photo</label>
+
+            <!-- choose how to add the photo: from the device or live camera -->
+            <div class="photo-options">
+              <button type="button" class="btn alt small photo-opt active" id="opt-upload">🖼️ Upload Image</button>
+              <button type="button" class="btn alt small photo-opt" id="opt-camera">📷 Use Camera</button>
+            </div>
+
+            <!-- option 1: pick a file from the device (hidden input, opened by the button below) -->
+            <div id="photo-upload-box" class="photo-box">
+              <input type="file" id="image" accept="image/jpeg,image/png,image/webp">
+              <small class="hint">JPG, PNG or WEBP, up to 5 MB.</small>
+            </div>
+
+            <!-- option 2: live camera -->
+            <div id="photo-camera-box" class="photo-box" style="display: none;">
+              <video id="camera-video" class="camera-video" autoplay playsinline muted></video>
+              <div class="photo-actions">
+                <button type="button" class="btn main small" id="camera-start">Start Camera</button>
+                <button type="button" class="btn main small" id="camera-capture" style="display: none;">📸 Capture Photo</button>
+                <button type="button" class="btn alt small" id="camera-flip" style="display: none;">🔄 Switch Camera</button>
+              </div>
+              <small class="hint">Allow camera access when your browser asks.</small>
+            </div>
+
+            <!-- preview of the photo that will be uploaded (from either option) -->
+            <div id="photo-preview-box" class="photo-box" style="display: none;">
+              <img id="photo-preview" class="photo-preview" alt="Selected product photo">
+              <div class="photo-actions">
+                <button type="button" class="btn alt small" id="photo-retake">Retake / Change</button>
+              </div>
+            </div>
+
+            <small id="photo-error" class="feedback"></small>
           </div>
           <button type="submit" class="btn main auth-submit">Upload to Marketplace</button>
           <small id="upload-error" class="feedback"></small>
