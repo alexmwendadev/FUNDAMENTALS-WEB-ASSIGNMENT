@@ -6,7 +6,7 @@
   --leaf: #2c5a37;
   --soil: #33261d;
   --maize: #e9b63a;
-  --milk: #0c0c0c;
+  --milk: #fafbf5;
   --sage: #dfe8d2;
   --head: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
   --body: "Figtree", "Segoe UI", Arial, sans-serif;
@@ -86,7 +86,7 @@ nav a:hover, nav a[aria-current="page"] { border-bottom-color: var(--maize); }
 .hero { min-height: 80vh; display: flex; align-items: center; background-color: var(--leaf); background-image: linear-gradient(rgba(20,40,26,.55), rgba(20,40,26,.55)), var(--hero-image); background-size: cover; background-position: center; background-repeat: no-repeat; color: var(--milk); }
 .hero-in { width: 100%; max-width: 820px; margin: 0 auto; padding: 96px 24px; text-align: center; }
 h1 { font-family: var(--head); font-weight: 800; font-size: clamp(2.3rem, 5.5vw, 4rem); line-height: 1.05; letter-spacing: -.02em; color: var(--milk); }
-.hero p { margin: 20px auto 0; max-width: 52ch; font-size: 1.15rem; text-shadow: 0 2px 4px rgba(179, 40, 40, 0.5); }
+.hero p { margin: 20px auto 0; max-width: 52ch; font-size: 1.15rem; text-shadow: 0 2px 4px rgba(0,0,0,.5); }
 
 section { padding: 72px 24px; }
 .wrap { max-width: 1100px; margin: 0 auto; }
@@ -133,7 +133,6 @@ footer { background: var(--leaf); color: var(--milk); padding: 28px 24px; border
 /* ============================================================
    AUTH PAGES (Login / Signup / Profile)
    ============================================================ */
-/* Updated layout to look like the modern card in the reference image */
 .auth-body { margin: 0; padding: 20px; height: 100vh; overflow: auto; display: flex; align-items: center; justify-content: center; background: #eef2f6; }
 .split-layout { display: flex; width: 100%; max-width: 1000px; height: 80vh; min-height: 600px; background: #fff; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 .auth-left { flex: 1; background: linear-gradient(135deg, #2c5a37 0%, #1e3c26 100%); background-size: cover; background-position: center; display: flex; align-items: center; padding: 60px; color: var(--milk); position: relative; }
