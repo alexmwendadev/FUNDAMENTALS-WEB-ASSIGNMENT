@@ -280,7 +280,7 @@ footer { background: var(--leaf); color: var(--milk); padding: 28px 24px; border
 .contact-card a, .contact-card p { color: #666; text-decoration: none; font-size: 0.9rem; }
 .contact-card a:hover { color: var(--leaf); text-decoration: underline; }
 
-.contact-form-container { background: #fff; padding: 24px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+.contact-form-container { background: #fff; padding: 10px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); display: flex; flex-direction: column; }
 .contact-form-container .input-group { margin-bottom: 12px; gap: 4px; }
 .contact-form-container input, .contact-form-container textarea { padding: 10px 14px; font-size: 0.95rem; }
 .contact-form-container textarea { min-height: 80px; height: 80px; }
