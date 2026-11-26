@@ -54,7 +54,7 @@
     <section class="products-section">
       <div class="wrap contact-grid">
         
-        <!-- Left Side -->
+        <!-- Left Side: Contact Details -->
         <div class="contact-info">
           <h2>Contact Information</h2>
           <p>We are available from Monday to Saturday, 8am to 6pm.</p>
@@ -80,24 +80,16 @@
             </div>
           </div>
 
-          <div class="contact-card" style="margin-bottom: 0;">
+          <div class="contact-card">
             <div class="icon">📍</div>
             <div>
               <h3>Location</h3>
               <p>Tharaka University, Tharaka-Nithi, Kenya</p>
             </div>
           </div>
-
-          <!-- Google Map of Tharaka University -->
-          <div class="map-container">
-            <iframe 
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3980.896074651264!2d37.7727473!3d-0.0362499!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1827fb3585f77a9d%3A0x6b689be2f9fdb277!2sTharaka%20University!5e0!3m2!1sen!2ske!4v1700000000000!5m2!1sen!2ske" 
-              allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-            </iframe>
-          </div>
         </div>
 
-        <!-- Right Side Form -->
+        <!-- Right Side: Enlarged Form -->
         <div class="contact-form-container">
           <h2>Send a Message</h2>
           <p>Fill out the form and we will get back to you via email.</p>
@@ -115,13 +107,24 @@
 
             <div class="input-group">
               <label for="contact-message">Message</label>
-              <textarea id="contact-message" rows="5" placeholder="How can we help?" required style="padding: 12px 16px; border: 1px solid #ccc; border-radius: 8px; font-family: var(--body); font-size: 1rem; transition: .2s; resize: vertical;"></textarea>
+              <textarea id="contact-message" rows="5" placeholder="How can we help?" required></textarea>
             </div>
 
             <button type="submit" class="btn main auth-submit">Send Message</button>
           </form>
         </div>
 
+      </div>
+      
+      <!-- NEW: Full-width Map Section below the form -->
+      <div class="wrap map-section">
+        <h2>Find Us Here</h2>
+        <div class="map-container">
+          <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3980.896074651264!2d37.7727473!3d-0.0362499!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1827fb3585f77a9d%3A0x6b689be2f9fdb277!2sTharaka%20University!5e0!3m2!1sen!2ske!4v1700000000000!5m2!1sen!2ske" 
+            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
       </div>
     </section>
   </main>
