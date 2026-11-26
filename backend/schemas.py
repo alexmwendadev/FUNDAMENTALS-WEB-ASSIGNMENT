@@ -59,6 +59,7 @@ class ProductResponse(BaseModel):
     stock: int
     image_url: str
     farmer_id: int
+    category: str = "vegetables"
     farmer_username: Optional[str] = None
 
     # convert the Decimal price to a plain number before it is checked
@@ -76,10 +77,10 @@ class ProductResponse(BaseModel):
 
 # --- Orders & payments ---
 # what the checkout page sends. Note there is NO price or total here: the server works that out
+# Also NO phone number here, because Pesapal collects it on their page.
 class CheckoutRequest(BaseModel):
     product_id: int
     quantity: int = Field(ge=1, le=10000)  # whole number from 1 to 10000
-    phone: str = Field(min_length=1, max_length=40)
     location: str = Field(min_length=3, max_length=200)
     email: Optional[str] = Field(default=None, max_length=254)
 
@@ -110,6 +111,7 @@ class OrderResponse(BaseModel):
     created_at: Optional[str] = None
     paid_at: Optional[str] = None
     payment_status: Optional[str] = None
+    farmer_phone: Optional[str] = None
 
     # convert both Decimal money values to plain numbers
     @field_validator("unit_price", "amount", mode="before")
@@ -142,3 +144,11 @@ class ContactMessageResponse(ContactMessageCreate):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
+
+# --- Password Reset ---
+class ForgotPasswordRequest(BaseModel):
+    email: str
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str

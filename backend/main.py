@@ -3,6 +3,8 @@ import logging
 import os
 import re
 import uuid
+import secrets
+from datetime import datetime, timedelta, timezone
 
 # PyJWT reads the login token the browser sends
 import jwt
@@ -33,6 +35,7 @@ import pesapal_service
 import schemas
 import services
 import storage
+import email_service
 # SessionLocal makes sessions, engine is the connection
 from database import SessionLocal, engine
 # upgrades an existing database when the server starts
@@ -223,6 +226,48 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
         "profile_picture": user.profile_picture,
     }
 
+# POST /api/forgot-password: sends an email with a reset link
+@app.post("/api/forgot-password")
+def forgot_password(req: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == req.email.lower()).first()
+    if not user:
+        # Prevent email enumeration, return success even if not found
+        return {"message": "If that email exists, a reset link was sent."}
+    
+    # Generate a secure token
+    token = secrets.token_urlsafe(32)
+    expires = (datetime.now(timezone.utc) + timedelta(hours=1)).isoformat()
+    user.reset_token = token
+    user.reset_token_expires = expires
+    db.commit()
+
+    reset_link = f"{config.FRONTEND_URL}/reset-password.html?token={token}"
+    email_service.send_reset_email(user.email, reset_link)
+    
+    return {"message": "If that email exists, a reset link was sent."}
+
+# POST /api/reset-password: actually resets the password using the token
+@app.post("/api/reset-password")
+def reset_password(req: schemas.ResetPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.reset_token == req.token).first()
+    
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+        
+    # Check expiry
+    if user.reset_token_expires:
+        expires = datetime.fromisoformat(user.reset_token_expires)
+        if datetime.now(timezone.utc) > expires:
+            raise HTTPException(status_code=400, detail="Reset token has expired")
+            
+    # Check password strength
+    services.check_password(req.new_password)
+    
+    user.hashed_password = auth.get_password_hash(req.new_password)
+    user.reset_token = None
+    user.reset_token_expires = None
+    db.commit()
+    return {"message": "Password updated successfully"}
 
 # GET /api/me: who am I? Every page uses it to refresh role, name and picture
 @app.get("/api/me", response_model=schemas.UserResponse)
@@ -376,6 +421,7 @@ def upload_product(
     unit_price: str = Form(...),
     unit: str = Form(...),
     stock: str = Form(...),
+    category: str = Form("vegetables"),
     # the photo
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
@@ -405,7 +451,7 @@ def upload_product(
 
     # build the product row with this farmer as the owner
     product = models.Product(item_name=name, unit_price=price, unit=unit_clean, stock=stock_n,
-                             image_url=image_url, farmer_id=current_user.id)
+                             category=category, image_url=image_url, farmer_id=current_user.id)
     # ...then save to the database; if that fails the saved photo is removed so no unused file is left behind
     try:
         # stage the row
@@ -523,7 +569,7 @@ def _start_payment(db, order, user, email=None):
             callback_url=f"{config.FRONTEND_URL}/payment-return.html",
             # the account's email, else the one typed at checkout, else the fallback
             email=user.email or email or config.PESAPAL_FALLBACK_EMAIL,
-            phone=order.phone,
+            phone=order.phone or "0700000000", # Fallback phone for Pesapal billing
             # the username stands in for a first name
             first_name=user.username,
             address=order.location or "Kenya",
@@ -592,11 +638,10 @@ def checkout(req: schemas.CheckoutRequest, db: Session = Depends(get_db),
     # is there enough in stock?
     services.check_stock(req.quantity, product.stock)
 
-    # check the phone number
-    phone = services.normalize_kenyan_phone(req.phone)
-    # not a valid number
-    if not phone:
-        raise HTTPException(status_code=400, detail="Enter a valid phone number, e.g. 0712 345 678")
+    # NOTE: Phone is no longer requested from the frontend. We use the profile phone if they have one,
+    # or pass a placeholder. Pesapal collects the actual payment phone number on their checkout page.
+    phone = current_user.phone or "0700000000"
+
     # delivery location
     location = req.location.strip()
     # too short to be a place
