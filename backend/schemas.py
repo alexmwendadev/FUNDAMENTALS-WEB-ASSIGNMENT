@@ -80,7 +80,7 @@ class ProductResponse(BaseModel):
 # Also NO phone number here, because Pesapal collects it on their page.
 class CheckoutRequest(BaseModel):
     product_id: int
-    quantity: int = Field(ge=1, le=10000)  # whole number from 1 to 10000
+    quantity: int = Field(ge=1, le=10000)
     location: str = Field(min_length=3, max_length=200)
     email: Optional[str] = Field(default=None, max_length=254)
 
