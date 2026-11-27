@@ -165,12 +165,26 @@ def reset_password(req: schemas.ResetPasswordRequest, db: Session = Depends(get_
         expires = datetime.fromisoformat(user.reset_token_expires)
         if datetime.now(timezone.utc) > expires:
             raise HTTPException(status_code=400, detail="Reset token has expired")
+    
+    # Check password strength
     services.check_password(req.new_password)
     
+    # Save the new hashed password
     user.hashed_password = auth.get_password_hash(req.new_password)
+    
+    # Clear the reset token so the link can't be used again
     user.reset_token = None
     user.reset_token_expires = None
-    db.commit()
+    
+    # Commit to the database
+    try:
+        db.commit()
+        db.refresh(user) # Refresh to ensure it actually saved
+    except Exception as e:
+        db.rollback()
+        log.error(f"Failed to save new password: {e}")
+        raise HTTPException(status_code=500, detail="Could not update password in database.")
+        
     return {"message": "Password updated successfully"}
 
 @app.get("/api/me", response_model=schemas.UserResponse)
