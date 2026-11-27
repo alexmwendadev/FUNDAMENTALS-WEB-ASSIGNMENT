@@ -15,7 +15,7 @@
     const actions = document.getElementById('result-actions');
 
     // opened without a payment reference: go to My Orders
-    if (!trackingId) { window.location.href = 'customer_dashboard.html'; return; }
+    if (!trackingId) { window.location.href = 'customer-dashboard.html'; return; }
 
     // builds a link styled as a button
     function link(label, href, cls) {
@@ -100,7 +100,7 @@
             } catch {
                 // the payment isn't lost; offer to check again
                 show('bad', "Can't reach the server", 'Your payment is safe. Check again in a moment.', null,
-                     [button('Check again', check), link('My orders', 'customer_dashboard.html', 'alt')]);
+                     [button('Check again', check), link('My orders', 'customer-dashboard.html', 'alt')]);
                 // stop retrying
                 return;
             }
@@ -119,7 +119,7 @@
             if (!res.ok) {
                 // show its message and offer to retry
                 show('bad', "We couldn't check the payment", errorMessage(data, 'Please try again shortly.'), null,
-                     [button('Check again', check), link('My orders', 'customer_dashboard.html', 'alt')]);
+                     [button('Check again', check), link('My orders', 'customer-dashboard.html', 'alt')]);
                 // stop
                 return;
             }
@@ -130,7 +130,7 @@
             if (status === 'completed') {
                 // success screen with the order summary
                 show('ok', 'Payment received', 'Thank you! The farmer has been notified and will arrange delivery.',
-                     data.order, [link('View my orders', 'customer_dashboard.html', 'main'),
+                     data.order, [link('View my orders', 'customer-dashboard.html', 'main'),
                                   link('Keep shopping', 'products.html', 'alt')]);
                 // done
                 return;
@@ -148,7 +148,7 @@
                 // ask them to contact me with the order number
                 show('bad', 'We need to double-check this payment',
                      'The amount we received did not match your order. Please contact us with your order number.',
-                     data.order, [link('Contact us', 'contact.html', 'main'), link('My orders', 'customer_dashboard.html', 'alt')]);
+                     data.order, [link('Contact us', 'contact.html', 'main'), link('My orders', 'customer-dashboard.html', 'alt')]);
                 // done
                 return;
             }

@@ -77,7 +77,7 @@ function renderNav() {
       navDashboard.style.display = 'block';
       // the link points to the right dashboard for the role
       const link = document.createElement('a');
-      link.href = role === 'farmer' ? 'dashboard.html' : 'customer_dashboard.html';
+      link.href = role === 'farmer' ? 'dashboard.html' : 'customer-dashboard.html';
       link.textContent = 'My Dashboard';
       // remove the old link, then add the new one
       navDashboard.textContent = '';
