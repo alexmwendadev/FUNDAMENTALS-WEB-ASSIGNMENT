@@ -240,8 +240,8 @@ if (loginForm) {
                 try {
                     // the page the user came from, if any
                     const ref = document.referrer ? new URL(document.referrer) : null;
-                    // only use it if it's on this site and isn't the login/signup page
-                    if (ref && ref.origin === window.location.origin && !/\/(login|signup)\.html$/.test(ref.pathname)) {
+                    // NEW: Ignore login, signup, forgot-password, and reset-password to prevent redirect loops
+                    if (ref && ref.origin === window.location.origin && !/\/(login|signup|forgot-password|reset-password)\.html$/.test(ref.pathname)) {
                         // go back to where they were
                         targetUrl = ref.href;
                     }
