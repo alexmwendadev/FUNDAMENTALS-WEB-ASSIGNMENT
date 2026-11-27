@@ -49,7 +49,7 @@ class Order(Base):
     farmer_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     buyer_username = Column(String)
     
-    # CHANGED: Made phone nullable so it can be filled in later by Pesapal
+    # Optional so Pesapal can fill it later
     phone = Column(String, nullable=True) 
     
     location = Column(String)

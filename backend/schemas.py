@@ -75,7 +75,6 @@ class OrderResponse(BaseModel):
     farmer_id: Optional[int] = None
     buyer_username: str
     
-    # THIS IS NOW OPTIONAL
     phone: Optional[str] = None 
     
     location: str

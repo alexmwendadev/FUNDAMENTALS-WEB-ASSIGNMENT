@@ -23,14 +23,17 @@ import services
 import storage
 import email_service
 from database import SessionLocal, engine
-from migrations import run_migrations
+# from migrations import run_migrations
 from services import ServiceError
 
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger("shamba")
 
+# 1. Create tables directly based on the updated models
 models.Base.metadata.create_all(bind=engine)
-run_migrations(engine)
+
+# 2. We commented out run_migrations so it doesn't crash Neon with old schema checks
+# run_migrations(engine)
 
 app = FastAPI(title="Shamba Fresh API")
 
@@ -344,7 +347,6 @@ def _start_payment(db, order, user, email=None):
     db.commit()
     db.refresh(payment)
 
-    # Use the phone from the order, then profile, then a valid dummy.
     pesapal_phone = order.phone or user.phone or "254712345678"
 
     try:
@@ -396,7 +398,6 @@ def checkout(req: schemas.CheckoutRequest, db: Session = Depends(get_db),
         raise HTTPException(status_code=400, detail="This product has no valid price yet. Please contact the farmer.")
     services.check_stock(req.quantity, product.stock)
 
-    # Set to current_user.phone (which could be None)
     phone = current_user.phone 
 
     location = req.location.strip()
