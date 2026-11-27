@@ -161,11 +161,12 @@ def reset_password(req: schemas.ResetPasswordRequest, db: Session = Depends(get_
     user = db.query(models.User).filter(models.User.reset_token == req.token).first()
     if not user:
         raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+        
     if user.reset_token_expires:
         expires = datetime.fromisoformat(user.reset_token_expires)
         if datetime.now(timezone.utc) > expires:
             raise HTTPException(status_code=400, detail="Reset token has expired")
-    
+            
     # Check password strength
     services.check_password(req.new_password)
     
@@ -176,13 +177,13 @@ def reset_password(req: schemas.ResetPasswordRequest, db: Session = Depends(get_
     user.reset_token = None
     user.reset_token_expires = None
     
-    # Commit to the database
+    # Commit to the database safely
     try:
         db.commit()
-        db.refresh(user) # Refresh to ensure it actually saved
+        db.refresh(user) # Force the DB to reload the user object
     except Exception as e:
         db.rollback()
-        log.error(f"Failed to save new password: {e}")
+        log.error(f"Failed to save new password for {user.username}: {e}")
         raise HTTPException(status_code=500, detail="Could not update password in database.")
         
     return {"message": "Password updated successfully"}
