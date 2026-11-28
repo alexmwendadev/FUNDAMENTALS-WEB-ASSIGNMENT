@@ -56,6 +56,8 @@ models.Base.metadata.create_all(bind=engine)
 
 # the app itself; every @app.get / @app.post below becomes a URL people can call
 app = FastAPI(title="Shamba Fresh API")
+# marker line: if I see this in the Render logs, the password-reset fix is the code that is running
+log.info("Shamba API started - reset-password fix v2 is LIVE")
 
 # CORS rules: only the websites listed in config.CORS_ORIGINS may call this API from a browser
 app.add_middleware(
@@ -208,6 +210,8 @@ def forgot_password(req: schemas.ForgotPasswordRequest, db: Session = Depends(ge
     # and the other account kept its old password. Now we find EVERY account that uses this email.
     # func.lower() on both sides also catches old accounts saved with capital letters in the email.
     users = db.query(models.User).filter(func.lower(models.User.email) == email).all()
+    # shows in the Render logs which usernames this email belongs to
+    log.info("Reset requested: email matched these accounts: %s", [u.username for u in users])
     # no account has that email: still answer 'sent' so nobody can find out which emails are registered
     if not users:
         return {"message": "If that email exists, a reset link was sent."}
@@ -272,6 +276,8 @@ def reset_password(req: schemas.ResetPasswordRequest, db: Session = Depends(get_
             log.error(f"Password for {user.username} did not change after reset")
             raise HTTPException(status_code=500, detail="Password was not saved. Please try again.")
 
+    # shows in the Render logs exactly which usernames now have the new password
+    log.info("Password reset saved for accounts: %s", [u.username for u in users])
     return {"message": "Password updated successfully"}
 
 # returns the profile of whoever is logged in
