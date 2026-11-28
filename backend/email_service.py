@@ -1,12 +1,19 @@
+# requests: sends the HTTP call to Brevo's email service
 import requests
+# my settings (Brevo key, sender address, frontend address)
 import config
+# for writing errors to the console
 import logging
 
+# shared logger named 'shamba'
 log = logging.getLogger("shamba")
 
+# builds the reset email and sends it through Brevo. Returns True if sent, False if it failed (the user is never told, for security)
 def send_reset_email(to_email, reset_link):
     """Sends a beautifully styled password reset email using Brevo API."""
+    # Brevo's address for sending a single email
     url = "https://api.brevo.com/v3/smtp/email"
+    # Brevo knows it is me from the API key; the other headers say we send and receive JSON
     headers = {
         "accept": "application/json",
         "api-key": config.BREVO_API_KEY,
@@ -17,6 +24,7 @@ def send_reset_email(to_email, reset_link):
     logo_url = f"{config.FRONTEND_URL}/assets/images/shambafreshlogo.jpg"
     
     # Industry-standard HTML email (uses tables and inline CSS for maximum compatibility)
+    # the email's design as an HTML string. {logo_url} and {reset_link} are filled in by Python (that's what the f before the quotes does)
     html_content = f"""
     <!DOCTYPE html>
     <html>
@@ -94,6 +102,7 @@ def send_reset_email(to_email, reset_link):
     </html>
     """
 
+    # the message itself: who sends it, who gets it, the subject and the HTML body
     payload = {
         "sender": {"name": "Shamba Fresh", "email": config.BREVO_SENDER_EMAIL},
         "to": [{"email": to_email}],
@@ -101,10 +110,14 @@ def send_reset_email(to_email, reset_link):
         "htmlContent": html_content
     }
     
+    # a failure here must not crash the reset request
     try:
+        # send it, giving up after 15 seconds
         response = requests.post(url, json=payload, headers=headers, timeout=15)
+        # turn an error reply from Brevo (4xx / 5xx) into a Python error
         response.raise_for_status()
         return True
+    # couldn't send (bad key, no internet...): log why and report False
     except Exception as exc:
         log.error(f"Brevo email error: {exc}")
         return False
